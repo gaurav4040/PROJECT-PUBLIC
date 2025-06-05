@@ -18,6 +18,7 @@ const MessageInput = () => {
 
     const reader = new FileReader();
     reader.onloadend = () => {
+      console.log("Image base64:", reader.result.slice(0, 100));
       setImagePreview(reader.result);
     };
     reader.readAsDataURL(file);
