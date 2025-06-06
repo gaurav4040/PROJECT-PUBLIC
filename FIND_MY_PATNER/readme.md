@@ -1,6 +1,6 @@
-Find My Partner - README
+# Find My Partner - README
 
-Overview
+## Overview
 
 Find My Partner is a web application designed to help users find compatible partners based on personal preferences and profile details. It includes user authentication, profile management, and a partner matching system.
 
@@ -26,7 +26,6 @@ Find My Partner is a web application designed to help users find compatible part
   4. Start the Application:
      npm start
      Visit http://localhost:3000 in your browser.
-Contributing
+## Contributing
   Contributions are welcome. Fork the repository, make changes, and submit a pull request.
-License
-This project is licensed under the MIT License.
+
