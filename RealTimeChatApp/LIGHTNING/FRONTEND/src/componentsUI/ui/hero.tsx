@@ -59,41 +59,40 @@ export function SplineSceneBasic() {
             />
           </div>
         </div>
-
-          </Card>
-        <div>
+      </Card>
+      <div>
         <Spotlight className="-top-40 left-0 md:left-60 md:-top-20" />
-          {imageData.map((item, index) => (
-            <div key={index} className="bg-black py-10 px-5">
-              <div
-                className={`flex flex-col md:flex-row ${
-                  index % 2 !== 0 ? "md:flex-row-reverse" : ""
-                } items-center justify-center`}
+        {imageData.map((item, index) => (
+          <div key={index} className="bg-black py-10 px-5">
+            <div
+              className={`flex flex-col md:flex-row ${
+                index % 2 !== 0 ? "md:flex-row-reverse" : ""
+              } items-center justify-center`}
+            >
+              <motion.img
+                src={item.src}
+                alt={item.alt}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease:"easeOut" }}
+                viewport={{ once: false }}
+                className="w-[60vw] h-[60vh] rounded-xl shadow-lg"
+                style={{ willChange: "transform, opacity" }}
+              />
+              <motion.div
+                className="md:w-1/2 text-left px-8 text-neutral-200"
+                initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                viewport={{ once: false }}
               >
-                <motion.img
-                  src={item.src}
-                  alt={item.alt}
-                  initial={{ opacity: 0, y: 50 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  viewport={{ once: true, amount: 0.3 }}
-                  className="w-[60vw] h-[60vh] rounded-xl shadow-lg"
-                  style={{ willChange: "transform, opacity" }}
-                />
-                <motion.div
-                  className="md:w-1/2 text-left px-8 text-neutral-200"
-                  initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.8, delay: 0.2 }}
-                  viewport={{ once: true }}
-                >
-                  <h2 className="text-2xl font-bold mb-4">{item.alt}</h2>
-                  <p className="text-lg">{item.text}</p>
-                </motion.div>
-              </div>
+                <h2 className="text-2xl font-bold mb-4">{item.alt}</h2>
+                <p className="text-lg">{item.text}</p>
+              </motion.div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
