@@ -1,4 +1,4 @@
-import { axiosInstance } from '@/lib/axios'
+    import { axiosInstance } from '@/lib/axios'
 import toast from 'react-hot-toast';
 import  {useNavigate}  from 'react-router-dom';
 import { io } from 'socket.io-client';
@@ -6,7 +6,8 @@ import { io } from 'socket.io-client';
 import {create} from 'zustand'
 
 
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
+// const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:3000" : "/";
+const BASE_URL = "http://localhost:3000"
 
 interface userData{
     fullName:string,
@@ -21,7 +22,7 @@ interface signinData{
 interface profileData{
     profilePic:string | ArrayBuffer | null,
 } 
-  export const useAuthStore = create((set,get)=>({
+  export const useAuthStore = create((set,get:any)=>({
     
       authUser:null,
       isSigningUp:false,
@@ -54,7 +55,7 @@ interface profileData{
             toast.success("Account created successfully");
             get().connectSocket();
             navigate("/home")
-        } catch (err) {
+        } catch (err:any) {
             toast.error(err.response.data.message);
         }finally{
             set({isSigningUp:false});
@@ -69,7 +70,7 @@ interface profileData{
             toast.success("signed In successfully");
             get().connectSocket();
             navigate("/home");
-        } catch (error) {
+        } catch (error:any) {
             toast.error(error.response.data.message);
         }finally{
             set({isSigningIn:false})
@@ -83,7 +84,7 @@ interface profileData{
             set({authUser:null});
             toast.success("signed Out successfully")
             get().disconnectSocket();
-        } catch (error) {
+        } catch (error:any) {
             toast.error(error.response.data.message);
         }
     },
@@ -95,7 +96,7 @@ interface profileData{
             set({authUser:res.data});
             toast.success("Profile updated successfully");
             navigate("/profile");
-         } catch (error) {
+         } catch (error:any) {
             toast.error(error.response.data.message);
          }finally{
             set({isUpdatingProfile:false});
@@ -103,7 +104,7 @@ interface profileData{
     },
 
     connectSocket: () => {
-        const { authUser } = get();
+        const { authUser }:any = get();
         if (!authUser || get().socket?.connected) return;
     
         const socket = io(BASE_URL, {

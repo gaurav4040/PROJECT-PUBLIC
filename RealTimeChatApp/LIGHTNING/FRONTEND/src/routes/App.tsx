@@ -9,7 +9,7 @@ import {Toaster} from 'react-hot-toast';
 import Header from "../componentsUI/ui/Header";
 import HomePage from "../pages/homePage";
 import ProfilePage from "../pages/profilePage";
-import Signin from "../pages/SignIn";
+import Signin from "../pages/signin.tsx";
 import Signup from "../pages/signup";
 import NotFoundPage from "@/pages/pageNotFound";
 import Loader from "@/componentsUI/ui/Loader";
@@ -18,7 +18,7 @@ import Loader from "@/componentsUI/ui/Loader";
 
 function App() {
 
-  const {authUser,checkAuth,isCheckingAuth,isSigningIn,isSigningUp,isUpdatingProfile} = useAuthStore();
+  const {authUser,checkAuth,isCheckingAuth,isSigningIn,isSigningUp,isUpdatingProfile}:any = useAuthStore();
 
   useEffect(()=>{
     checkAuth();
