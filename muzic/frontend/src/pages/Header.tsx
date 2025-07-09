@@ -1,14 +1,14 @@
-import { Home, User, Briefcase, FileText, LogIn, LogInIcon, AtSignIcon } from 'lucide-react'
+import { Home, User, Briefcase, FileText, LogInIcon, AtSignIcon } from 'lucide-react'
 import { NavBar } from "../components/ui/tubelight-navbar.tsx"
 import { useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore.ts';
-
+import { Purple } from './Loader.tsx';
 
 
 
  export function NavBarHeader() {
 
-  const {authUser,checkAuth,isCheckingAuth,isSigningIn,isSigningUp} = useAuthStore();
+  const {authUser,checkAuth,isCheckingAuth,isSigningIn,isSigningUp}:any = useAuthStore();
 
     useEffect(()=>{
       checkAuth();
@@ -38,14 +38,12 @@ import { useAuthStore } from '../store/useAuthStore.ts';
     { name: 'Projects', url: '#', icon: Briefcase },
     { name: 'Resume', url: '#', icon: FileText },
     {name:'profile',url:'/profile',icon:LogInIcon  },
-    {name:'signup',url:'/signup',icon:LogInIcon  }
   ]
 
   const navItems = authUser?navItems2:navItems1;
 
   return (
-<div className="bg-transparent">
-
+    <div className="bg-transparent">
       <NavBar items={navItems} />
     </div>
   )

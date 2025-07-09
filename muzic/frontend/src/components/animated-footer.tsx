@@ -81,9 +81,9 @@ const Footer: React.FC<FooterProps> = ({
   return (
     <footer
       ref={footerRef}
-      className="bg-black text-white relative flex flex-col w-full h-full justify-between lg:h-screen select-none"
+      className="bg-black text-white relative flex flex-col w-[screen] h-full justify-between lg:h-screen select-none"
     >
-      <div className="container mx-auto flex flex-col md:flex-row justify-between w-full gap-4 pb-24 pt-8 px-4">
+      <div className="container flex flex-col md:flex-row justify-between w-[screen] gap-4 pb-24 pt-8 px-4">
         <div className="space-y-2">
           <ul className="flex flex-wrap gap-4">
             {leftLinks.map((link, index) => (
@@ -116,11 +116,11 @@ const Footer: React.FC<FooterProps> = ({
               </li>
             ))}
           </ul>
-          <div className="text-right mt-4">
+          {/* <div className="text-right mt-4">
             <button className="text-sm hover:underline inline-flex items-center">
               Back to top
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
       <div

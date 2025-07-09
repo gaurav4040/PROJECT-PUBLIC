@@ -1,102 +1,46 @@
-import { generateToken } from "../lib/utils.js";
-import User from "../models/userModel.js";
-import bcrypt from "bcrypt";
+import User from "../models/userModel.js"
+import bcrypt from "bcrypt"
+import { generateToken } from "../lib/utils.js"
 
-export const checkAuth = async (req, res) => {
-  try {
-    res.status(200).json(req.user);
-  } catch (error) {
-    console.log(`error in authController in checkAuth: `, error.message);
-    res.status(500).json({ message: "internal server error checkAuth" });
-  }
-};
-
-export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
-
-  try {
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "all fields are required" });
-    } else if (password.length < 6) {
-      return res
-        .status(400)
-        .json({ message: "password should contain at least 6 character" });
+export const checkAuth=(req,res)=>{
+    try {
+        res.status(200).json({message:"valid user sucessfully"})
+    } catch (error) {
+        console.log(`error in checkAuth backend ${error}`)
+        res.status(500).json({message:"internal server error in backend checkAuth"})
     }
+}
 
-    const user = await User.findOne({ email });
-
-    if (user) return res.status(400).json({ message: "email already exist" });
-
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const newUser = new User({
-      name: name,
-      email: email,
-      password: hashedPassword,
-    });
-
-    if (newUser) {
-      generateToken(newUser._id, res);
-      await newUser.save();
-
-      res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-      });
-    } else {
-      res.status(400).json({ message: "invalid user data" });
-    }
-  } catch (error) {
-    console.log(`error in signup controller:`, error.message);
-    res.status(500).json({ message: "internal server error signup" });
-  }
-};
-
-export const signin = async (req, res) => {
-
-  console.log("recived signIn request")
-
-  const { email, password } = req.body;
+export const signin= async (req, res) => {
+  
+const code = req.body.code;
 
   try {
-    if (!email || !password) {
-      return res.status(400).json({ message: "all fields required" });
-    }
-
-    const user = await User.findOne({ email: email });
-
-    if (!user) {
-      return res.status(400).json({ message: "invalid credentials" });
-    } else {
-      const isCorrectPassword =await bcrypt.compare(password, user.password);
-
-      if (isCorrectPassword) {
-        generateToken(user._id, res);
-        res.status(200).json({
-          _id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          profilePic: user.profilePic,
-        });
-      } else {
-        return res.status(400).json({ message: "invalid credentials" });
+    const response = await axios.post(
+      "https://accounts.spotify.com/api/token",
+      qs.stringify({
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: process.env.REDIRECT_URI,
+      }),
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization:
+            "Basic " +
+            Buffer.from(process.env.CLIENT_ID + ":" + process.env.CLIENT_SECRET).toString("base64"),
+        },
       }
-    }
-  } catch (error) {
-    console.log(`error in authController while signin `, error.message);
-    res.status(500).json({ message: "internal server error signin" });
+    );
+
+    res.json({
+      accessToken: response.data.access_token,
+      refreshToken: response.data.refresh_token,
+      expiresIn: response.data.expires_in,
+    });
+  } catch (err) {
+    console.error(err);
+    res.sendStatus(400);
   }
 };
 
-export const signout = async (req, res) => {
-  try {
-    res.cookie("jwt_token", "", { maxAge: 0 });
-    res.status(200).json({ message: "signout successfully" });
-  } catch (error) {
-    console.log(`error in authController while signout : `, error.message);
-    res.status(500).json({ message: "internal server error signout" });
-  }
-};

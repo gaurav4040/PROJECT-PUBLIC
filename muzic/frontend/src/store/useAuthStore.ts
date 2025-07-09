@@ -1,80 +1,56 @@
 import { create } from "zustand";
-import toast from "react-hot-toast";
-import { axiosInstance } from "../lib/axios.ts";
-// import { useNavigate } from "react-router-dom";
-
-interface signinData {
-  email: string;
-  password: string;
-}
-interface userData {
-  fullName: string;
-  email: string;
-  password: string;
-}
+import  axiosInstance  from "../lib/axios.ts";
+import { toast } from "react-hot-toast";
 
 export const useAuthStore = create((set) => ({
   authUser: null,
-  isSigning: false,
-  isSigningUp: false,
-  isUpdatingProfile: false,
-  isCheckingAuth: true,
-  socket: null,
+  accessToken: null,
+  isAuthenticating: false,
 
-  checkAuth:async ():Promise<void>=>{
-          try {
-              const res = await axiosInstance.get("/auth/check");
-              
-              set({authUser:res.data});
-              // get().connectSocket();
-            } catch (error) {
-                console.log(`error in checkAuth useAuthStore : `,error);
-                set({authUser:null})
-                
-            }finally{
-                set({isCheckingAuth:false});
-            }
-        },
-        
-    signup:async (data:userData)=>{
-        set({isSigningUp:true});
-        try {
-            const res = await axiosInstance.post("/auth/signup",data);
-            set({authUser:res.data});
-            toast.success("Account created successfully");
-            // get().connectSocket();
-            // navigate("/home")
-        } catch (err:any) {
-            toast.error(err.response.data.message);
-        }finally{
-            set({isSigningUp:false});
-        }
-    },
-    
-    signin:async (data:signinData)=>{
-        set({isSigningIn:true})
-        try {
-            const res = await axiosInstance.post("auth/signin",data);
-            set({authUser:res.data});
-            toast.success("signed In successfully");
-            // get().connectSocket();
-            // navigate("/home");
-        } catch (error:any) {
-            toast.error(error.response.data.message);
-        }finally{
-            set({isSigningIn:false})
-        }
-    },
-
-    signOut:async ()=>{
+    checkAuth: async (): Promise<void> => {
+        set({ isCheckingAuth: true });
 
         try {
-            await axiosInstance.post("auth/signout");
-            set({authUser:null});
-            toast.success("signed Out successfully")
-            // get().disconnectSocket();
-        } catch (error:any) {
-            toast.error(error.response.data.message);
+            const token = localStorage.getItem("accessToken");
+            if (!token) throw new Error("No token found");
+
+            // Set token in Axios header for this call
+            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+            const res = await axiosInstance.get("/api/me"); // your backend should call Spotify API with the token
+            set({ authUser: res.data }); // Spotify user object (e.g., display_name, email, etc.)
+        } catch (error) {
+            console.warn("❌ checkAuth failed:", error);
+            set({ authUser: null });
+            localStorage.removeItem("accessToken");
+        } finally {
+            set({ isCheckingAuth: false });
         }
-    },
+},
+  loginWithSpotify: () => {
+    const clientId = "e77110693c1e4f2db0a94e3228d4c804";
+    const redirectUri = "https://9efd-103-171-46-19.ngrok-free.app/callback";
+    const scope = "user-read-private user-read-email";
+
+    const url = `https://accounts.spotify.com/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&scope=${encodeURIComponent(scope)}`;
+
+    window.location.href = url;
+  },
+
+  handleSpotifyCallback: async (code: string) => {
+    set({ isAuthenticating: true });
+    try {
+      const res = await axiosInstance.post("/api/callback", { code });
+      const { accessToken, user } = res.data;
+
+      set({ accessToken, authUser: user });
+      toast.success("Logged in with Spotify");
+    } catch (err: any) { 
+        toast.error("Spotify login failed");
+        console.error("Spotify callback error:", err);
+    } finally {
+        set({ isAuthenticating: false });
+    }
+  },
+
 }));

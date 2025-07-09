@@ -1,0 +1,17 @@
+
+[
+  {
+    "id": 1,
+    "title": "Perfect",
+    "artist": "Ed Sheeran",
+    "cover": "/images/perfect.jpg",
+    "url": "/music/perfect.mp3"
+  },
+  {
+    "id": 2,
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "cover": "/images/blinding.jpg",
+    "url": "/music/blinding.mp3"
+  }
+]

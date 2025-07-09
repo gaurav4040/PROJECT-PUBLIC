@@ -8,6 +8,9 @@ import Signin from "../pages/Signin.tsx"
 import Signup from "../pages/Signup.tsx"
 import { DownFooter } from "../pages/Footer.tsx"
 import { NavBarHeader } from "../pages/Header.tsx"
+import Profile from "../pages/Profile.tsx"
+import MainLayout from "./mainLayout.tsx"
+import Callback from "../pages/Callback.tsx"
 
 function App() {
   const { authUser, checkAuth, isCheckingAuth, isSigning, isSigningUp }:any = useAuthStore()
@@ -29,11 +32,29 @@ function App() {
   return (
     <div >
       <NavBarHeader />
-        <Routes>
-          <Route path="/" element={!authUser ? <HomePage /> : <Navigate to="/home" />} />
-          <Route path="/home" element={authUser?<Content />:<HomePage/>} />
-          <Route path="/signin" element={<Signin />} />
-          <Route path="/signup" element={<Signup />} />
+        <Routes >
+          
+
+          {authUser?<Route>
+              <Route element={<MainLayout/>}  >
+                <Route path="/" element={<Content/>} />
+                <Route path="/home" element={<Content />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signin" element={<Signin />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/callback" element={<Callback/>} />
+              </Route>  
+
+          </Route>:<Route>
+                <Route path="/" element={<HomePage/>} />
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/signin" element={<Signin />} />
+
+            </Route>
+            }
+
+
         </Routes>
 
 

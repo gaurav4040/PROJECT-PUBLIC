@@ -1,9 +1,10 @@
-import axios from 'axios'
+import axios from "axios";
 
+const axiosInstance = axios.create({
+  baseURL: "https://api.spotify.com/v1",
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+  },
+});
 
-export const axiosInstance = axios.create({
-
-    baseURL:"http://localhost:3001/api",
-    withCredentials:true
-})
-
+export default axiosInstance;
