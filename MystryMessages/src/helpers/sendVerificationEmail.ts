@@ -3,7 +3,7 @@ import {resend} from '@/lib/resend'
 import VerificationEmail from '../../emails/verificationEmail'
 
 import { ApiResponse } from '@/types/ApiResponse'
-import { any } from 'zod/v4'
+
 
 export async function sendVerificationEmail(
     email:string,username:string,verifyCode:string
